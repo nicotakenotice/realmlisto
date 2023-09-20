@@ -64,13 +64,11 @@ app.on('window-all-closed', () => {
 /* ========================================================================= */
 
 const getRealmlist$ = async () => {
-  const { canceled, filePaths } = await dialog.showOpenDialog();
+  const { canceled, filePaths } = await dialog.showOpenDialog({ filters: [{ name: 'Realmlist', extensions: ['wtf'] }] });
   if (!canceled) {
     const realmlistPath = filePaths[0];
-    if (realmlistPath.endsWith('.wtf')) {
-      const realmlistContent = await fs.readFile(realmlistPath, { encoding: 'utf8' });
-      return { path: realmlistPath, content: realmlistContent.trim() };  
-    }
+    const realmlistContent = await fsPromises.readFile(realmlistPath, { encoding: 'utf8' });
+    return { path: realmlistPath, content: realmlistContent.trim() };  
   }
   return { path: '', content: '' };
 };
