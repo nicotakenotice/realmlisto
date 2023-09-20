@@ -1,6 +1,11 @@
 const { app, BrowserWindow, dialog, ipcMain, Menu } = require('electron');
 const path = require('node:path');
-const fs = require('fs/promises');
+const fs = require('fs');
+const fsPromises = require('fs/promises');
+
+const DATA_PATH = path.join(__dirname, '..', 'data');
+const CONFIG_PATH = path.join(DATA_PATH, 'config.json');
+const REALMLISTS_PATH = path.join(DATA_PATH, 'realmlists.json');
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -18,12 +23,30 @@ const createWindow = () => {
   else {
     mainWindow.loadURL('http://localhost:5173');
   }
-}
+};
+
+const createDataFolder = () => {
+  try {
+    if (!fs.existsSync(DATA_PATH)) {
+      fs.mkdirSync(DATA_PATH);
+    }
+    if (!fs.existsSync(CONFIG_PATH)) {
+      fs.writeFileSync(CONFIG_PATH, '');
+    }
+    if (!fs.existsSync(REALMLISTS_PATH)) {
+      fs.writeFileSync(REALMLISTS_PATH, '');
+    }
+  }
+  catch (error) {
+    console.error(error);
+  }
+};
 
 app.whenReady().then(() => {
   ipcMain.handle('getRealmlist$', getRealmlist$);
 
   createWindow();
+  createDataFolder();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
