@@ -68,7 +68,19 @@ const getRealmlist$ = async () => {
   if (!canceled) {
     const realmlistPath = filePaths[0];
     const realmlistContent = await fsPromises.readFile(realmlistPath, { encoding: 'utf8' });
-    return { path: realmlistPath, content: realmlistContent.trim() };  
+    const realmlist = { path: realmlistPath, content: realmlistContent.trim() };
+    await cacheRealmlist$(realmlist);
+    return realmlist;
   }
   return { path: '', content: '' };
+};
+
+
+const cacheRealmlist$ = async (realmlist) => {
+  try {
+    await fsPromises.writeFile(CONFIG_PATH, JSON.stringify(realmlist, null, 2));
+  }
+  catch (error) {
+    console.error(error);
+  }
 };
