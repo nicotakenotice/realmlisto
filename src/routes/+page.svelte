@@ -1,9 +1,15 @@
 <script lang="ts">
+  import { SOURCE } from '$lib/enums';
   import { Realmlist } from '$lib/models';
+  import { onMount } from 'svelte';
 
   const appName: string = 'realmlisto';
   let realmlist: Realmlist = new Realmlist();
   let isSelectingFile: boolean = false;
+
+  onMount(async () => {
+    realmlist = await window.electronApi.getRealmlist$(SOURCE.CONFIG);
+  });
 
   const getRealmlist$ = async () => {
     // Prevent opening multiple dialogs
@@ -11,7 +17,7 @@
       return;
     }
     isSelectingFile = true;
-    await window.electronApi.getRealmlist$()
+    await window.electronApi.getRealmlist$(SOURCE.DIALOG)
       .then((value) => {
         if (value.path) {
           realmlist = value;

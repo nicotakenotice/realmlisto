@@ -31,10 +31,10 @@ const createDataFolder = () => {
       fs.mkdirSync(DATA_PATH);
     }
     if (!fs.existsSync(CONFIG_PATH)) {
-      fs.writeFileSync(CONFIG_PATH, '');
+      fs.writeFileSync(CONFIG_PATH, JSON.stringify({ path: '', content: '' }, null, 2));
     }
     if (!fs.existsSync(REALMLISTS_PATH)) {
-      fs.writeFileSync(REALMLISTS_PATH, '');
+      fs.writeFileSync(REALMLISTS_PATH, JSON.stringify([]), null, 2);
     }
   }
   catch (error) {
@@ -43,7 +43,7 @@ const createDataFolder = () => {
 };
 
 app.whenReady().then(() => {
-  ipcMain.handle('getRealmlist$', getRealmlist$);
+  ipcMain.handle('getRealmlist$', (e, source) => getRealmlist$(source));
 
   createWindow();
   createDataFolder();
@@ -63,22 +63,36 @@ app.on('window-all-closed', () => {
 
 /* ========================================================================= */
 
-const getRealmlist$ = async () => {
+const getRealmlist$ = async (source) => {
+  if (source === 'config') {
+    const realmlist = await readFile$(CONFIG_PATH, true);
+    return realmlist;
+  }
   const { canceled, filePaths } = await dialog.showOpenDialog({ filters: [{ name: 'Realmlist', extensions: ['wtf'] }] });
   if (!canceled) {
     const realmlistPath = filePaths[0];
-    const realmlistContent = await fsPromises.readFile(realmlistPath, { encoding: 'utf8' });
+    const realmlistContent = await readFile$(realmlistPath);
     const realmlist = { path: realmlistPath, content: realmlistContent.trim() };
-    await cacheRealmlist$(realmlist);
+    // Cache realmlist
+    await writeFile$(CONFIG_PATH, realmlist, true);
     return realmlist;
   }
   return { path: '', content: '' };
 };
 
-
-const cacheRealmlist$ = async (realmlist) => {
+const writeFile$ = async (path, content, toJson = false) => {
   try {
-    await fsPromises.writeFile(CONFIG_PATH, JSON.stringify(realmlist, null, 2));
+    await fsPromises.writeFile(path, toJson ? JSON.stringify(content, null, 2) : content);
+  }
+  catch (error) {
+    console.error(error);
+  }
+};
+
+const readFile$ = async (path, toJson = false) => {
+  try {
+    const content = await fsPromises.readFile(path, { encoding: 'utf8' });
+    return toJson ? JSON.parse(content) : content;
   }
   catch (error) {
     console.error(error);
