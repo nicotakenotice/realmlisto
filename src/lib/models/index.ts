@@ -1,3 +1,3 @@
 export * from './IElectronApi';
 export * from './Realmlist';
-export * from './RealmlistFormData';
+export * from './RealmlistEntry';

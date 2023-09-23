@@ -44,6 +44,8 @@ const createDataFolder = () => {
 
 app.whenReady().then(() => {
   ipcMain.handle('getRealmlist$', (e, source) => getRealmlist$(source));
+  ipcMain.handle('getRealmlists$', () => getRealmlists$());
+  ipcMain.handle('saveRealmlists$', (e, realmlists) => saveRealmlists$(realmlists));
 
   createWindow();
   createDataFolder();
@@ -79,6 +81,17 @@ const getRealmlist$ = async (source) => {
     }
   }
   return realmlist;
+};
+
+const getRealmlists$ = async () => {
+  const realmlists = await readFile$(REALMLISTS_PATH, true);
+  return realmlists;
+};
+
+const saveRealmlists$ = async (realmlists) => {
+  await writeFile$(REALMLISTS_PATH, realmlists, true);
+  const updatedRealmlists = await readFile$(REALMLISTS_PATH, true);
+  return updatedRealmlists;
 };
 
 const writeFile$ = async (path, content, toJson = false) => {

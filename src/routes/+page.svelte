@@ -1,15 +1,17 @@
 <script lang="ts">
   import { REALMLIST_SOURCE } from '$lib/enums';
-  import { Realmlist, RealmlistFormData } from '$lib/models';
+  import { Realmlist, RealmlistEntry } from '$lib/models';
   import { onMount } from 'svelte';
 
   const appName: string = 'realmlisto';
   let realmlist: Realmlist = new Realmlist();
-  let realmlistFormData: RealmlistFormData = new RealmlistFormData();
+  let realmlists: RealmlistEntry[] = [];
+  let realmlistEntry: RealmlistEntry = new RealmlistEntry();
   let isSelectingFile: boolean = false;
 
   onMount(async () => {
     realmlist = await window.electronApi.getRealmlist$(REALMLIST_SOURCE.CONFIG);
+    realmlists = await window.electronApi.getRealmlists$();
   });
 
   const getRealmlist$ = async () => {
@@ -28,7 +30,7 @@
   };
 
   const openModal = (id: string) => {
-    realmlistFormData = new RealmlistFormData();
+    realmlistEntry = new RealmlistEntry();
     const modal = document.getElementById(id);
     (modal as any)?.showModal();
   };
@@ -38,15 +40,17 @@
     (modal as any)?.close();
   };
 
-  const addRealmlist$ = async () => {
-    console.log(realmlistFormData);
+  const saveRealmlist$ = async () => {
+    console.log(realmlistEntry);
+    realmlists = await window.electronApi.saveRealmlists$([...realmlists, realmlistEntry]);
+    closeModal('modal-1');
   };
 </script>
 
 <!-- ====================================================================== -->
 
 <header class="p-4">
-  <h1 class="text-3xl">{appName}</h1>
+  <h1 class="text-3xl font-bold">{appName}</h1>
 </header>
 
 <div class="flex flex-col gap-4 p-4">
@@ -92,19 +96,44 @@
   </div>
 </div>
 
+<div class="flex flex-col gap-4 p-4">
+  <h3 class="text-lg font-bold">Entries ({realmlists.length})</h3>
+
+  {#each realmlists as entry}
+    <div class="card bg-base-200 flex flex-row gap-4 p-4">
+      <div class="tooltip tooltip-right" data-tip="Use">
+        <button class="btn">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <div>
+        <div class="font-bold">{entry.serverName}</div>  
+        <div class="font-mono">{entry.realmlistContent}</div>  
+      </div>
+
+      <div class="tooltip tooltip-left ml-auto" data-tip="Delete">
+        <button class="btn">
+          <i class="bi bi-trash3"></i>
+        </button>
+      </div>
+    </div>
+  {/each}
+</div>
+
 <dialog id="modal-1" class="modal">
   <div class="modal-box">
     <div class="flex flex-col gap-4">
-      <h3 class="font-bold text-lg">New realmlist</h3>
+      <h3 class="text-lg font-bold">New realmlist</h3>
 
-      <form class="flex flex-col gap-4" on:submit|preventDefault={() => addRealmlist$()}>
+      <form class="flex flex-col gap-4" on:submit|preventDefault={() => saveRealmlist$()}>
         <input
           class="input input-bordered valid:input-success font-mono"
           type="text" 
           placeholder="Server name" 
           autocomplete="off"
           required
-          bind:value={realmlistFormData.serverName}
+          bind:value={realmlistEntry.serverName}
         />
 
         <input
@@ -113,7 +142,7 @@
           placeholder="Realmlist"
           autocomplete="off"
           required
-          bind:value={realmlistFormData.realmlistContent}
+          bind:value={realmlistEntry.realmlistContent}
         />
 
         <div class="flex flex-row justify-end gap-4">
