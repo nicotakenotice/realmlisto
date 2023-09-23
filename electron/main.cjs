@@ -64,20 +64,21 @@ app.on('window-all-closed', () => {
 /* ========================================================================= */
 
 const getRealmlist$ = async (source) => {
+  let realmlist = { path: '', content: '' };
   if (source === 'config') {
-    const realmlist = await readFile$(CONFIG_PATH, true);
-    return realmlist;
+    realmlist = await readFile$(CONFIG_PATH, true);
   }
-  const { canceled, filePaths } = await dialog.showOpenDialog({ filters: [{ name: 'Realmlist', extensions: ['wtf'] }] });
-  if (!canceled) {
-    const realmlistPath = filePaths[0];
-    const realmlistContent = await readFile$(realmlistPath);
-    const realmlist = { path: realmlistPath, content: realmlistContent.trim() };
-    // Cache realmlist
-    await writeFile$(CONFIG_PATH, realmlist, true);
-    return realmlist;
+  else {
+    const { canceled, filePaths } = await dialog.showOpenDialog({ filters: [{ name: 'Realmlist', extensions: ['wtf'] }] });
+    if (!canceled) {
+      const realmlistPath = filePaths[0];
+      const realmlistContent = await readFile$(realmlistPath);
+      realmlist = { path: realmlistPath, content: realmlistContent.trim() };
+      // Cache realmlist
+      await writeFile$(CONFIG_PATH, realmlist, true);
+    }
   }
-  return { path: '', content: '' };
+  return realmlist;
 };
 
 const writeFile$ = async (path, content, toJson = false) => {
