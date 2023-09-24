@@ -9,7 +9,8 @@
 
   let isCopied: boolean = false;
 
-  const startCopyAnimation = () => {
+  const copyRealmlist = () => {
+    navigator.clipboard.writeText(realmlist?.realmlist!);
     isCopied = true;
     setTimeout(() => {
       isCopied = false;
@@ -40,7 +41,7 @@
 
   <div class="flex flex-row ml-auto invisible group-hover:visible">
     <div class="tooltip tooltip-left" data-tip={isCopied ? 'Copied!' : 'Copy'}>
-      <button class="btn" on:click={() => startCopyAnimation()}>
+      <button class="btn" on:click={() => copyRealmlist()}>
         {#if isCopied}
           <i class="bi bi-clipboard-check text-success"></i>
         {:else}
