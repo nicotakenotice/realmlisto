@@ -1,4 +1,4 @@
 export class Realmlist {
-  path: string = '';
-  content: string = '';
+  server: string = '';
+  realmlist: string = '';
 }

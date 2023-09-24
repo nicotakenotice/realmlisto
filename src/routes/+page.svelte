@@ -1,16 +1,17 @@
 <script lang="ts">
+  import RealmlistCard from '$lib/components/RealmlistCard.svelte';
   import { REALMLIST_SOURCE } from '$lib/enums';
-  import { Realmlist, RealmlistEntry } from '$lib/models';
+  import { RealmlistFile, Realmlist } from '$lib/models';
   import { onMount } from 'svelte';
 
   const appName: string = 'realmlisto';
-  let realmlist: Realmlist = new Realmlist();
-  let realmlists: RealmlistEntry[] = [];
-  let realmlistEntry: RealmlistEntry = new RealmlistEntry();
+  let realmlistFile: RealmlistFile = new RealmlistFile();
+  let realmlists: Realmlist[] = [];
+  let selectedRealmlist: Realmlist = new Realmlist();
   let isSelectingFile: boolean = false;
 
   onMount(async () => {
-    realmlist = await window.electronApi.getRealmlist$(REALMLIST_SOURCE.CONFIG);
+    realmlistFile = await window.electronApi.getRealmlist$(REALMLIST_SOURCE.CONFIG);
     realmlists = await window.electronApi.getRealmlists$();
   });
 
@@ -23,14 +24,14 @@
     await window.electronApi.getRealmlist$(REALMLIST_SOURCE.DIALOG)
       .then((value) => {
         if (value.path) {
-          realmlist = value;
+          realmlistFile = value;
         }
       })
       .finally(() => isSelectingFile = false);
   };
 
   const openModal = (id: string) => {
-    realmlistEntry = new RealmlistEntry();
+    selectedRealmlist = new Realmlist();
     const modal = document.getElementById(id);
     (modal as any)?.showModal();
   };
@@ -41,8 +42,8 @@
   };
 
   const saveRealmlist$ = async () => {
-    console.log(realmlistEntry);
-    realmlists = await window.electronApi.saveRealmlists$([...realmlists, realmlistEntry]);
+    console.log(selectedRealmlist);
+    realmlists = await window.electronApi.saveRealmlists$([...realmlists, selectedRealmlist]);
     closeModal('modal-1');
   };
 </script>
@@ -57,7 +58,7 @@
   <div class="flex flex-row gap-4">
     <div class="tooltip tooltip-right" data-tip="Select realmlist">
       <button 
-        class="btn btn-square btn-primary no-animation" 
+        class="btn btn-square btn-primary" 
         on:click={() => getRealmlist$()}
       >
         {#if isSelectingFile}
@@ -73,14 +74,14 @@
       type="text" 
       placeholder="Realmlist location"
       readonly 
-      bind:value={realmlist.path}
+      bind:value={realmlistFile.path}
     />
   </div>
 
   <div class="flex flex-row gap-4">
     <div class="tooltip tooltip-right" data-tip="Add new realmlist">
       <button 
-        class="btn btn-square btn-primary no-animation" 
+        class="btn btn-square btn-primary" 
         on:click={() => openModal('modal-1')}
       >
         <i class="bi bi-plus-lg"></i>
@@ -91,7 +92,7 @@
       class="textarea textarea-bordered font-mono resize-none w-full lg:w-1/2" 
       placeholder="Realmlist content"
       readonly
-      bind:value={realmlist.content}
+      bind:value={realmlistFile.content}
     />
   </div>
 </div>
@@ -99,25 +100,11 @@
 <div class="flex flex-col gap-4 p-4">
   <h3 class="text-lg font-bold">Entries ({realmlists.length})</h3>
 
-  {#each realmlists as entry}
-    <div class="card bg-base-200 flex flex-row gap-4 p-4">
-      <div class="tooltip tooltip-right" data-tip="Use">
-        <button class="btn">
-          <i class="bi bi-chevron-right"></i>
-        </button>
-      </div>
-
-      <div>
-        <div class="font-bold">{entry.serverName}</div>  
-        <div class="font-mono">{entry.realmlistContent}</div>  
-      </div>
-
-      <div class="tooltip tooltip-left ml-auto" data-tip="Delete">
-        <button class="btn">
-          <i class="bi bi-trash3"></i>
-        </button>
-      </div>
-    </div>
+  {#each realmlists as realmlist}
+    <RealmlistCard 
+      realmlist={realmlist} 
+      isActive={realmlist.realmlist === realmlistFile.content} 
+    />
   {/each}
 </div>
 
@@ -133,7 +120,7 @@
           placeholder="Server name" 
           autocomplete="off"
           required
-          bind:value={realmlistEntry.serverName}
+          bind:value={selectedRealmlist.server}
         />
 
         <input
@@ -142,7 +129,7 @@
           placeholder="Realmlist"
           autocomplete="off"
           required
-          bind:value={realmlistEntry.realmlistContent}
+          bind:value={selectedRealmlist.realmlist}
         />
 
         <div class="flex flex-row justify-end gap-4">

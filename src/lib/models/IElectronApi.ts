@@ -1,12 +1,12 @@
 import type { REALMLIST_SOURCE } from '$lib/enums';
+import type { RealmlistFile } from './RealmlistFile';
 import type { Realmlist } from './Realmlist';
-import type { RealmlistEntry } from './RealmlistEntry';
 
 // Preload script methods
 export interface IElectronApi {
-  getRealmlist$: (source: REALMLIST_SOURCE) => Promise<Realmlist>,
-  getRealmlists$: () => Promise<RealmlistEntry[]>,
-  saveRealmlists$: (realmlists: RealmlistEntry[]) => Promise<RealmlistEntry[]>
+  getRealmlist$: (source: REALMLIST_SOURCE) => Promise<RealmlistFile>,
+  getRealmlists$: () => Promise<Realmlist[]>,
+  saveRealmlists$: (realmlists: Realmlist[]) => Promise<Realmlist[]>
 }
 
 // Extend existing Window interface
