@@ -1,6 +1,12 @@
 [
   {
-    "serverName": "Warmane",
-    "realmlistContent": "set realmlist logon.warmane.com"
+    "uuid": "6f1fe1cc-1ea3-49d0-b4b3-414ce4043ffc",
+    "server": "WoW Circle",
+    "realmlist": "set realmlist logon.wowcircle.com"
+  },
+  {
+    "uuid": "aa41c661-7171-4a66-b709-5d0a5f7a42e8",
+    "server": "Warmane",
+    "realmlist": "set realmlist logon.warmane.com"
   }
 ]

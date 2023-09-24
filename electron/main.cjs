@@ -46,6 +46,7 @@ app.whenReady().then(() => {
   ipcMain.handle('getRealmlist$', (e, source) => getRealmlist$(source));
   ipcMain.handle('getRealmlists$', () => getRealmlists$());
   ipcMain.handle('saveRealmlists$', (e, realmlists) => saveRealmlists$(realmlists));
+  ipcMain.handle('setRealmlist$', (e, realmlist) => setRealmlist$(realmlist));
 
   createWindow();
   createDataFolder();
@@ -89,9 +90,23 @@ const getRealmlists$ = async () => {
 };
 
 const saveRealmlists$ = async (realmlists) => {
-  await writeFile$(REALMLISTS_PATH, realmlists, true);
-  const updatedRealmlists = await readFile$(REALMLISTS_PATH, true);
-  return updatedRealmlists;
+  // Order alphabetically by server name
+  const orderedRealmlists = structuredClone(realmlists).sort((a, b) => {
+    const aServer = a.server.toLowerCase();
+    const bServer = b.server.toLowerCase();
+    if (aServer < bServer) return -1;
+    if (aServer > bServer) return 1;
+    return 0;
+  });
+  await writeFile$(REALMLISTS_PATH, orderedRealmlists, true);
+  return orderedRealmlists;
+};
+
+const setRealmlist$ = async (realmlist) => {
+  let currentRealmlist = await readFile$(CONFIG_PATH, true);
+  currentRealmlist.content = realmlist.realmlist;
+  await writeFile$(CONFIG_PATH, currentRealmlist, true);
+  return currentRealmlist;
 };
 
 const writeFile$ = async (path, content, toJson = false) => {

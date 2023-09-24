@@ -6,7 +6,8 @@ import type { Realmlist } from './Realmlist';
 export interface IElectronApi {
   getRealmlist$: (source: REALMLIST_SOURCE) => Promise<RealmlistFile>,
   getRealmlists$: () => Promise<Realmlist[]>,
-  saveRealmlists$: (realmlists: Realmlist[]) => Promise<Realmlist[]>
+  saveRealmlists$: (realmlists: Realmlist[]) => Promise<Realmlist[]>,
+  setRealmlist$: (realmlist: Realmlist) => Promise<RealmlistFile>
 }
 
 // Extend existing Window interface

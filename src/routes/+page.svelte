@@ -9,8 +9,20 @@
   let realmlists: Realmlist[] = [];
   let selectedRealmlist: Realmlist = new Realmlist();
   let isSelectingFile: boolean = false;
+  let isLoading: boolean = false;
 
   onMount(async () => {
+    document.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case '+':
+          e.preventDefault();
+          openModal('modal-1');
+          break;
+        default:
+          break;
+      }
+    });
+
     realmlistFile = await window.electronApi.getRealmlist$(REALMLIST_SOURCE.CONFIG);
     realmlists = await window.electronApi.getRealmlists$();
   });
@@ -42,10 +54,15 @@
   };
 
   const saveRealmlist$ = async () => {
-    console.log(selectedRealmlist);
     realmlists = await window.electronApi.saveRealmlists$([...realmlists, selectedRealmlist]);
     closeModal('modal-1');
   };
+
+  const setRealmlist$ = async (e: CustomEvent) => {
+    console.log({ type: e.type, detail: e.detail });
+    const realmlist: Realmlist = e.detail;
+    realmlistFile = await window.electronApi.setRealmlist$(realmlist);
+  }
 </script>
 
 <!-- ====================================================================== -->
@@ -70,7 +87,7 @@
     </div>
 
     <input
-      class="input input-bordered font-mono w-full lg:w-1/2"
+      class="input input-bordered font-mono w-full"
       type="text" 
       placeholder="Realmlist location"
       readonly 
@@ -79,7 +96,7 @@
   </div>
 
   <div class="flex flex-row gap-4">
-    <div class="tooltip tooltip-right" data-tip="Add new realmlist">
+    <div class="tooltip tooltip-right" data-tip="New realmlist">
       <button 
         class="btn btn-square btn-primary" 
         on:click={() => openModal('modal-1')}
@@ -89,7 +106,7 @@
     </div>
 
     <textarea 
-      class="textarea textarea-bordered font-mono resize-none w-full lg:w-1/2" 
+      class="textarea textarea-bordered font-mono resize-none w-full" 
       placeholder="Realmlist content"
       readonly
       bind:value={realmlistFile.content}
@@ -104,6 +121,7 @@
     <RealmlistCard 
       realmlist={realmlist} 
       isActive={realmlist.realmlist === realmlistFile.content} 
+      on:setRealmlist={(e) => setRealmlist$(e)}
     />
   {/each}
 </div>
