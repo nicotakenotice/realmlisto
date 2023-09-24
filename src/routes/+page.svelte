@@ -12,6 +12,12 @@
   let isLoading: boolean = false;
 
   onMount(async () => {
+    initKeybinds();
+    realmlistFile = await window.electronApi.getRealmlist$(REALMLIST_SOURCE.CONFIG);
+    realmlists = await window.electronApi.getRealmlists$();
+  });
+
+  const initKeybinds = () => {
     document.addEventListener('keydown', (e) => {
       switch (e.key) {
         case '+':
@@ -22,10 +28,7 @@
           break;
       }
     });
-
-    realmlistFile = await window.electronApi.getRealmlist$(REALMLIST_SOURCE.CONFIG);
-    realmlists = await window.electronApi.getRealmlists$();
-  });
+  };
 
   const getRealmlist$ = async () => {
     // Prevent opening multiple dialogs
@@ -59,9 +62,11 @@
   };
 
   const setRealmlist$ = async (e: CustomEvent) => {
-    console.log({ type: e.type, detail: e.detail });
     const realmlist: Realmlist = e.detail;
-    realmlistFile = await window.electronApi.setRealmlist$(realmlist);
+    // realmlistFile = await window.electronApi.setRealmlist$(realmlist);
+    await window.electronApi.setRealmlist$(realmlist)
+      .then((value) => realmlistFile = value)
+      .catch((error) => console.log(error));
   }
 </script>
 

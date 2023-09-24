@@ -7,6 +7,8 @@ const DATA_PATH = path.join(__dirname, '..', 'data');
 const CONFIG_PATH = path.join(DATA_PATH, 'config.json');
 const REALMLISTS_PATH = path.join(DATA_PATH, 'realmlists.json');
 
+let config = null;
+
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1200,
@@ -31,7 +33,7 @@ const createDataFolder = () => {
       fs.mkdirSync(DATA_PATH);
     }
     if (!fs.existsSync(CONFIG_PATH)) {
-      fs.writeFileSync(CONFIG_PATH, JSON.stringify({ path: '', content: '' }, null, 2));
+      fs.writeFileSync(CONFIG_PATH, JSON.stringify({ path: '' }, null, 2));
     }
     if (!fs.existsSync(REALMLISTS_PATH)) {
       fs.writeFileSync(REALMLISTS_PATH, JSON.stringify([]), null, 2);
@@ -67,46 +69,51 @@ app.on('window-all-closed', () => {
 /* ========================================================================= */
 
 const getRealmlist$ = async (source) => {
-  let realmlist = { path: '', content: '' };
+  let realmlistPath = '';
+  let realmlistContent = '';
+
   if (source === 'config') {
-    realmlist = await readFile$(CONFIG_PATH, true);
+    if (!config) {
+      // Load config
+      config = await readFile$(CONFIG_PATH, true);
+    }
+    if (config.path) {
+      realmlistPath = config.path;
+    }
   }
   else {
     const { canceled, filePaths } = await dialog.showOpenDialog({ filters: [{ name: 'Realmlist', extensions: ['wtf'] }] });
     if (!canceled) {
-      const realmlistPath = filePaths[0];
-      const realmlistContent = await readFile$(realmlistPath);
-      realmlist = { path: realmlistPath, content: realmlistContent.trim() };
-      // Cache realmlist
-      await writeFile$(CONFIG_PATH, realmlist, true);
+      realmlistPath = filePaths[0];
     }
   }
-  return realmlist;
+  if (realmlistPath) {
+    realmlistContent = await readFile$(realmlistPath);
+    // Cache realmlist
+    await writeFile$(CONFIG_PATH, { path: realmlistPath }, true);
+  }
+  return { path: realmlistPath, content: realmlistContent.trim() };
 };
 
 const getRealmlists$ = async () => {
   const realmlists = await readFile$(REALMLISTS_PATH, true);
-  return realmlists;
+  const sortedRealmlists = sortRealmlistsByServerName(realmlists);
+  return sortedRealmlists;
 };
 
 const saveRealmlists$ = async (realmlists) => {
-  // Order alphabetically by server name
-  const orderedRealmlists = structuredClone(realmlists).sort((a, b) => {
-    const aServer = a.server.toLowerCase();
-    const bServer = b.server.toLowerCase();
-    if (aServer < bServer) return -1;
-    if (aServer > bServer) return 1;
-    return 0;
-  });
-  await writeFile$(REALMLISTS_PATH, orderedRealmlists, true);
-  return orderedRealmlists;
+  const sortedRealmlists = sortRealmlistsByServerName(realmlists);
+  await writeFile$(REALMLISTS_PATH, sortedRealmlists, true);
+  return sortedRealmlists;
 };
 
 const setRealmlist$ = async (realmlist) => {
-  let currentRealmlist = await readFile$(CONFIG_PATH, true);
-  currentRealmlist.content = realmlist.realmlist;
-  await writeFile$(CONFIG_PATH, currentRealmlist, true);
-  return currentRealmlist;
+  if (config.path) {
+    await writeFile$(config.path, realmlist.realmlist);
+    const realmlistFile = await getRealmlist$('config');
+    return realmlistFile;
+  }
+  throw new Error('No realmlist path specified');
 };
 
 const writeFile$ = async (path, content, toJson = false) => {
@@ -126,4 +133,14 @@ const readFile$ = async (path, toJson = false) => {
   catch (error) {
     console.error(error);
   }
+};
+
+const sortRealmlistsByServerName = (realmlists) => {
+  return structuredClone(realmlists).sort((a, b) => {
+    const aServer = a.server.toLowerCase();
+    const bServer = b.server.toLowerCase();
+    if (aServer < bServer) return -1;
+    if (aServer > bServer) return 1;
+    return 0;
+  });
 };
