@@ -22,7 +22,7 @@
       switch (e.key) {
         case '+':
           e.preventDefault();
-          openModal('modal-1');
+          editRealmlist$(new Realmlist());
           break;
         default:
           break;
@@ -46,7 +46,6 @@
   };
 
   const openModal = (id: string) => {
-    selectedRealmlist = new Realmlist();
     const modal = document.getElementById(id);
     (modal as any)?.showModal();
   };
@@ -56,17 +55,24 @@
     (modal as any)?.close();
   };
 
-  const saveRealmlist$ = async () => {
-    realmlists = await window.electronApi.saveRealmlists$([...realmlists, selectedRealmlist]);
+  const saveRealmlist$ = async (realmlist: Realmlist) => {
+    const isNew = realmlists.findIndex((o) => o.uuid === realmlist.uuid) === -1;
+    const newRealmlists = isNew
+      ? [...realmlists, realmlist]
+      : realmlists.map((o) => o.uuid === realmlist.uuid ? realmlist : o);
+    realmlists = await window.electronApi.saveRealmlists$(newRealmlists);
     closeModal('modal-1');
   };
 
-  const setRealmlist$ = async (e: CustomEvent) => {
-    const realmlist: Realmlist = e.detail;
-    // realmlistFile = await window.electronApi.setRealmlist$(realmlist);
+  const setRealmlist$ = async (realmlist: Realmlist) => {
     await window.electronApi.setRealmlist$(realmlist)
       .then((value) => realmlistFile = value)
       .catch((error) => console.log(error));
+  }
+
+  const editRealmlist$ = async (realmlist: Realmlist) => {
+    selectedRealmlist = realmlist;
+    openModal('modal-1');
   }
 </script>
 
@@ -104,7 +110,7 @@
     <div class="tooltip tooltip-right" data-tip="New realmlist">
       <button 
         class="btn btn-square btn-primary" 
-        on:click={() => openModal('modal-1')}
+        on:click={() => editRealmlist$(new Realmlist())}
       >
         <i class="bi bi-plus-lg"></i>
       </button>
@@ -126,7 +132,8 @@
     <RealmlistCard 
       realmlist={realmlist} 
       isActive={realmlist.realmlist === realmlistFile.content} 
-      on:setRealmlist={(e) => setRealmlist$(e)}
+      on:setRealmlist={(e) => setRealmlist$(e.detail)}
+      on:editRealmlist={(e) => editRealmlist$(e.detail)}
     />
   {/each}
 </div>
@@ -134,9 +141,11 @@
 <dialog id="modal-1" class="modal">
   <div class="modal-box">
     <div class="flex flex-col gap-4">
-      <h3 class="text-lg font-bold">New realmlist</h3>
+      <h3 class="text-lg font-bold">
+        {selectedRealmlist.server ? 'Edit' : 'New' } realmlist
+      </h3>
 
-      <form class="flex flex-col gap-4" on:submit|preventDefault={() => saveRealmlist$()}>
+      <form class="flex flex-col gap-4" on:submit|preventDefault={() => saveRealmlist$(selectedRealmlist)}>
         <input
           class="input input-bordered valid:input-success font-mono"
           type="text" 

@@ -51,7 +51,7 @@
     </div>
 
     <div class="tooltip tooltip-left" data-tip="Edit">
-      <button class="btn">
+      <button class="btn" on:click={() => dispatch('editRealmlist', realmlist)}>
         <i class="bi bi-pencil"></i>
       </button>
     </div>
