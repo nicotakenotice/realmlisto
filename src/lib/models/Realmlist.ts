@@ -1,5 +1,5 @@
 export class Realmlist {
-  uuid: string = crypto.randomUUID();
+  uuid: string = '';
   server: string = '';
   realmlist: string = '';
 }

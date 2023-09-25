@@ -57,7 +57,7 @@
     </div>
 
     <div class="tooltip tooltip-left" data-tip="Delete">
-      <button class="btn hover:text-error">
+      <button class="btn hover:text-error" on:click={() => dispatch('deleteRealmlist', realmlist)}>
         <i class="bi bi-trash3"></i>
       </button>
     </div>
