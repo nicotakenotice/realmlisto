@@ -41,7 +41,7 @@
 
   <div class="flex flex-row invisible group-hover:visible">
     <div class="tooltip tooltip-left" data-tip={isCopied ? 'Copied!' : 'Copy'}>
-      <button class="btn" on:click={() => copyRealmlist()}>
+      <button class="btn btn-sm" on:click={() => copyRealmlist()}>
         {#if isCopied}
           <i class="bi bi-clipboard-check text-success"></i>
         {:else}
@@ -51,13 +51,13 @@
     </div>
 
     <div class="tooltip tooltip-left" data-tip="Edit">
-      <button class="btn" on:click={() => dispatch('editRealmlist', realmlist)}>
+      <button class="btn btn-sm" on:click={() => dispatch('editRealmlist', realmlist)}>
         <i class="bi bi-pencil"></i>
       </button>
     </div>
 
     <div class="tooltip tooltip-left" data-tip="Delete">
-      <button class="btn hover:text-error" on:click={() => dispatch('deleteRealmlist', realmlist)}>
+      <button class="btn btn-sm hover:text-error" on:click={() => dispatch('deleteRealmlist', realmlist)}>
         <i class="bi bi-trash3"></i>
       </button>
     </div>
