@@ -93,7 +93,7 @@
 <!-- ====================================================================== -->
 
 <header class="p-4">
-  <h1 class="text-3xl font-bold">{APP_NAME}</h1>
+  <h1 class="font-bold text-3xl">{APP_NAME}</h1>
 </header>
 
 <div class="flex flex-col gap-4 p-4">
@@ -140,23 +140,26 @@
 </div>
 
 <div class="flex flex-col gap-4 p-4">
-  <h3 class="text-lg font-bold">Entries ({realmlists.length})</h3>
+  <h3 class="font-bold text-lg">Entries ({realmlists.length})</h3>
 
-  {#each realmlists as realmlist}
-    <RealmlistCard 
-      realmlist={realmlist} 
-      isActive={realmlist.realmlist === realmlistFile.content} 
-      on:setRealmlist={(e) => setRealmlist$(e.detail)}
-      on:editRealmlist={(e) => editRealmlist(e.detail)}
-      on:deleteRealmlist={(e) => deleteRealmlist(e.detail)}
-    />
-  {/each}
+  <div class="grid grid-cols-12 gap-4">
+    {#each realmlists as realmlist}
+      <RealmlistCard 
+        className="col-span-12 lg:col-span-6"
+        realmlist={realmlist} 
+        isActive={realmlist.realmlist === realmlistFile.content} 
+        on:setRealmlist={(e) => setRealmlist$(e.detail)}
+        on:editRealmlist={(e) => editRealmlist(e.detail)}
+        on:deleteRealmlist={(e) => deleteRealmlist(e.detail)}
+      />
+    {/each}
+  </div>
 </div>
 
 <dialog id={EDIT_MODAL_ID} class="modal">
   <div class="modal-box">
     <div class="flex flex-col gap-4">
-      <h3 class="text-lg font-bold">
+      <h3 class="font-bold text-lg">
         {selectedRealmlist.uuid ? 'Edit' : 'New' } realmlist
       </h3>
 
@@ -201,12 +204,12 @@
 <dialog id={DELETE_MODAL_ID} class="modal">
   <div class="modal-box">
     <div class="flex flex-col gap-4">
-      <h3 class="text-lg font-bold">
+      <h3 class="font-bold text-lg">
         Delete realmlist
       </h3>
 
       <div>
-        Are you sure you want to delete <span class="text-error font-bold">{selectedRealmlist.server}</span>?
+        Are you sure you want to delete <span class="font-bold text-error">{selectedRealmlist.server}</span>?
       </div>
 
       <div class="flex flex-row justify-end gap-4">

@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { Realmlist } from '$lib/models';
   import { createEventDispatcher } from 'svelte';
-
-  const dispatch = createEventDispatcher();
-
+  
+  export let className: string = '';
   export let realmlist: Realmlist | null = null;
   export let isActive: boolean = false;
-
+  
+  const dispatch = createEventDispatcher();
   let isCopied: boolean = false;
 
   const copyRealmlist = () => {
@@ -20,14 +20,14 @@
 
 <!-- ====================================================================== -->
 
-<div class="group card bg-base-200 flex flex-row items-center gap-4 p-4">
+<div class="group card bg-base-200 flex flex-row items-center gap-4 p-4 overflow-hidden {className}">
   <div class="tooltip tooltip-right" data-tip="Set">
     <button class="btn group-hover:btn-primary" on:click={() => dispatch('setRealmlist', realmlist)}>
       <i class="bi bi-play text-xl"></i>
     </button>
   </div>
 
-  <div>
+  <div class="flex-grow overflow-hidden">
     <div class="flex flex-row items-baseline gap-2 font-bold">
       <div class="text-primary">{realmlist?.server}</div>
       {#if isActive}
@@ -36,10 +36,10 @@
         </div>
       {/if}
     </div>
-    <div class="font-mono">{realmlist?.realmlist}</div>
+    <div class="font-mono ellipsis">{realmlist?.realmlist}</div>
   </div>
 
-  <div class="flex flex-row ml-auto invisible group-hover:visible">
+  <div class="flex flex-row invisible group-hover:visible">
     <div class="tooltip tooltip-left" data-tip={isCopied ? 'Copied!' : 'Copy'}>
       <button class="btn" on:click={() => copyRealmlist()}>
         {#if isCopied}
@@ -63,3 +63,13 @@
     </div>
   </div>
 </div>
+
+<!-- ====================================================================== -->
+
+<style>
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
