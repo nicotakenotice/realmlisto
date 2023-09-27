@@ -6,8 +6,9 @@
   export let realmlist: Realmlist | null = null;
   export let isActive: boolean = false;
   
-  const dispatch = createEventDispatcher();
   let isCopied: boolean = false;
+  
+  const dispatch = createEventDispatcher();
 
   const copyRealmlist = () => {
     navigator.clipboard.writeText(realmlist?.realmlist!);
@@ -63,13 +64,3 @@
     </div>
   </div>
 </div>
-
-<!-- ====================================================================== -->
-
-<style>
-  .ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-</style>

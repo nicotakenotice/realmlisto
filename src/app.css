@@ -6,3 +6,9 @@
   /* Disable animation globally */
   @apply no-animation;
 }
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

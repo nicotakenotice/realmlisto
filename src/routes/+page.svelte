@@ -1,14 +1,13 @@
 <script lang="ts">
+  import Header from '$lib/components/Header.svelte';
   import RealmlistCard from '$lib/components/RealmlistCard.svelte';
-  import { REALMLIST_SOURCE, THEME } from '$lib/enums';
+  import { REALMLIST_SOURCE } from '$lib/enums';
   import { RealmlistFile, Realmlist } from '$lib/models';
   import { onMount } from 'svelte';
 
-  const APP_NAME: string = 'realmlisto';
   const EDIT_MODAL_ID: string = 'edit-modal';
   const DELETE_MODAL_ID: string = 'delete-modal';
   
-  let darkTheme: boolean = true;
   let realmlistFile: RealmlistFile = new RealmlistFile();
   let realmlists: Realmlist[] = [];
   let selectedRealmlist: Realmlist = new Realmlist();
@@ -89,25 +88,11 @@
     realmlists = await window.electronApi.saveRealmlists$(newRealmlists);
     closeModal(DELETE_MODAL_ID);
   };
-
-  $: if (document.documentElement) {
-    document.documentElement.dataset["theme"] = darkTheme ? THEME.DARK : THEME.LIGHT;
-  }
 </script>
 
 <!-- ====================================================================== -->
 
-<header class="flex flex-row items-center gap-4 p-4">
-  <h1 class="font-bold text-3xl">{APP_NAME}</h1>
-
-  <div class="ml-auto">
-    <label class="swap swap-rotate text-xl">
-      <input type="checkbox" bind:checked={darkTheme} />
-      <i class="bi bi-sun swap-off" />
-      <i class="bi bi-moon swap-on" />
-    </label>
-  </div>
-</header>
+<Header />
 
 <div class="flex flex-col gap-4 p-4">
   <div class="flex flex-row gap-4">
