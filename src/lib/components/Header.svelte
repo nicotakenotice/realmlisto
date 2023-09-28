@@ -1,12 +1,17 @@
 <script lang="ts">
   import { THEME } from '$lib/enums';
-  import { onMount } from 'svelte';
+  import type { RealmlistFile } from '$lib/models';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   const APP_NAME: string = 'realmlisto';
   const GITHUB_LINK: string = 'https://github.com/nicotakenotice/realmlisto';
-  
+
+  export let realmlistFile: RealmlistFile | null = null;
+
   let rootElement: HTMLElement | null = null;
   let darkTheme: boolean = true;
+
+  const dispatch = createEventDispatcher();
 
   onMount(() => {
     rootElement = document.documentElement;
@@ -37,4 +42,13 @@
       </a>
     </div>
   </div>
+
+  <button 
+    class="btn btn-outline btn-success" 
+    class:btn-disabled={!realmlistFile?.path}
+    on:click={() => dispatch('startClient')}
+  >
+    <i class="bi bi-play text-xl"></i>
+    <span>Play</span>
+  </button>
 </header>

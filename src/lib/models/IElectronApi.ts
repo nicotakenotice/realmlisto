@@ -4,6 +4,7 @@ import type { Realmlist } from './Realmlist';
 
 // Preload script methods
 export interface IElectronApi {
+  startClient$: (realmlistPath: string) => Promise<boolean>,
   getRealmlist$: (source: REALMLIST_SOURCE) => Promise<RealmlistFile>,
   getRealmlists$: () => Promise<Realmlist[]>,
   saveRealmlists$: (realmlists: Realmlist[]) => Promise<Realmlist[]>,

@@ -8,6 +8,7 @@
   const EDIT_MODAL_ID: string = 'edit-modal';
   const DELETE_MODAL_ID: string = 'delete-modal';
   
+  let clientFound: boolean = false;
   let realmlistFile: RealmlistFile = new RealmlistFile();
   let realmlists: Realmlist[] = [];
   let selectedRealmlist: Realmlist = new Realmlist();
@@ -30,6 +31,14 @@
         await getRealmlist$();
       }
     });
+  };
+
+  const startClient$ = async (realmlistPath: string) => {
+    // clientStarted = await window.electronApi.startClient$(realmlistPath);
+    clientFound = true;
+    setTimeout(() => {
+      clientFound = false;
+    }, 2000);
   };
 
   const getRealmlist$ = async () => {
@@ -92,7 +101,10 @@
 
 <!-- ====================================================================== -->
 
-<Header />
+<Header 
+  realmlistFile={realmlistFile}
+  on:startClient={() => startClient$(realmlistFile.path)} 
+/>
 
 <div class="flex flex-col gap-4 p-4">
   <div class="flex flex-row gap-4">

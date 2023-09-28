@@ -2,6 +2,7 @@ const { app, BrowserWindow, dialog, ipcMain, Menu } = require('electron');
 const path = require('node:path');
 const fs = require('fs');
 const fsPromises = require('fs/promises');
+const { spawn } = require('node:child_process');
 
 const DATA_PATH = path.join(__dirname, '..', 'data');
 const CONFIG_PATH = path.join(DATA_PATH, 'config.json');
@@ -45,6 +46,7 @@ const createDataFolder = () => {
 };
 
 app.whenReady().then(() => {
+  ipcMain.handle('startClient$', (e, realmlistPath) => startClient$(realmlistPath));
   ipcMain.handle('getRealmlist$', (e, source) => getRealmlist$(source));
   ipcMain.handle('getRealmlists$', () => getRealmlists$());
   ipcMain.handle('saveRealmlists$', (e, realmlists) => saveRealmlists$(realmlists));
@@ -67,6 +69,16 @@ app.on('window-all-closed', () => {
 });
 
 /* ========================================================================= */
+
+const startClient$ = async (realmlistPath) => {
+  const execPath = path.join(realmlistPath, '../../..', 'wow.exe');
+  if (fs.existsSync(execPath)) {
+    const client = spawn(execPath, { detached: true, stdio: 'ignore' });
+    client.unref();
+    return true;
+  }
+  return false;
+};
 
 const getRealmlist$ = async (source) => {
   let realmlistPath = '';
