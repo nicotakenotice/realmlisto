@@ -238,3 +238,19 @@
     </div>
   </div>
 </dialog>
+
+<div class="toast w-80">
+  <div class="alert">
+    <i class="bi bi-rocket-takeoff text-success"></i>
+    <span>Launching client</span>
+  </div>
+
+  <div class="alert">
+    <i class="bi bi-exclamation-triangle text-warning"></i>
+    <span>Executable not found</span>
+  </div>
+
+  <div class="alert">
+    <progress class="progress progress-success col-span-full" value="70" max="100"></progress>
+  </div>
+</div>

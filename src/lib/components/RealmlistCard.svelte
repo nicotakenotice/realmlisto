@@ -7,7 +7,7 @@
   export let isActive: boolean = false;
   
   let isCopied: boolean = false;
-  
+
   const dispatch = createEventDispatcher();
 
   const copyRealmlist = () => {
@@ -37,10 +37,10 @@
         </div>
       {/if}
     </div>
-    <div class="font-mono ellipsis">{realmlist?.realmlist}</div>
+    <div class="font-mono text-sm ellipsis">{realmlist?.realmlist}</div>
   </div>
 
-  <div class="flex flex-row invisible group-hover:visible">
+  <div class="flex flex-row items-center invisible group-hover:visible">
     <div class="tooltip tooltip-left" data-tip={isCopied ? 'Copied!' : 'Copy'}>
       <button class="btn btn-sm" on:click={() => copyRealmlist()}>
         {#if isCopied}
