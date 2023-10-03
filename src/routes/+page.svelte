@@ -1,6 +1,7 @@
 <script lang="ts">
   import Header from '$lib/components/Header.svelte';
   import RealmlistCard from '$lib/components/RealmlistCard.svelte';
+  import Toast from '$lib/components/Toast.svelte';
   import { REALMLIST_SOURCE } from '$lib/enums';
   import { RealmlistFile, Realmlist } from '$lib/models';
   import { onMount } from 'svelte';
@@ -34,7 +35,7 @@
   };
 
   const startClient$ = async (realmlistPath: string) => {
-    // clientStarted = await window.electronApi.startClient$(realmlistPath);
+    // clientFound = await window.electronApi.startClient$(realmlistPath);
     clientFound = true;
     setTimeout(() => {
       clientFound = false;
@@ -240,17 +241,15 @@
 </dialog>
 
 <div class="toast w-80">
-  <div class="alert">
-    <i class="bi bi-rocket-takeoff text-success"></i>
-    <span>Launching client</span>
-  </div>
+  <Toast 
+    type="success"
+    icon="bi bi-rocket-takeoff"
+    text="Launching client"
+  />
 
-  <div class="alert">
-    <i class="bi bi-exclamation-triangle text-warning"></i>
-    <span>Executable not found</span>
-  </div>
-
-  <div class="alert">
-    <progress class="progress progress-success col-span-full" value="70" max="100"></progress>
-  </div>
+  <Toast 
+    type="warning"
+    icon="bi bi-exclamation-triangle"
+    text="Executable not found"
+  />
 </div>
