@@ -1,9 +1,10 @@
 <script lang="ts">
   import Header from '$lib/components/Header.svelte';
   import RealmlistCard from '$lib/components/RealmlistCard.svelte';
-  import Toast from '$lib/components/Toast.svelte';
+  import Toasts from '$lib/components/Toasts.svelte';
   import { REALMLIST_SOURCE } from '$lib/enums';
-  import { RealmlistFile, Realmlist } from '$lib/models';
+  import { RealmlistFile, Realmlist, Toast, TOAST_TYPE } from '$lib/models';
+  import { addToast } from '$lib/store/toastsStore';
   import { onMount } from 'svelte';
 
   const EDIT_MODAL_ID: string = 'edit-modal';
@@ -37,9 +38,11 @@
   const startClient$ = async (realmlistPath: string) => {
     // clientFound = await window.electronApi.startClient$(realmlistPath);
     clientFound = true;
-    setTimeout(() => {
-      clientFound = false;
-    }, 2000);
+
+    addToast(clientFound 
+      ? { ...new Toast(), type: TOAST_TYPE.SUCCESS, icon: 'bi bi-rocket-takeoff', text: 'Launching client' }
+      : { ...new Toast(), type: TOAST_TYPE.WARNING, icon: 'bi bi-exclamation-triangle', text: 'Executable not found' }
+    );
   };
 
   const getRealmlist$ = async () => {
@@ -240,16 +243,4 @@
   </div>
 </dialog>
 
-<div class="toast w-80">
-  <Toast 
-    type="success"
-    icon="bi bi-rocket-takeoff"
-    text="Launching client"
-  />
-
-  <Toast 
-    type="warning"
-    icon="bi bi-exclamation-triangle"
-    text="Executable not found"
-  />
-</div>
+<Toasts />
