@@ -70,6 +70,27 @@ app.on('window-all-closed', () => {
 
 /* ========================================================================= */
 
+const writeFile$ = async (path, content, toJson = false) => {
+  try {
+    await fsPromises.writeFile(path, toJson ? JSON.stringify(content, null, 2) : content);
+  }
+  catch (error) {
+    console.error(error);
+  }
+};
+
+const readFile$ = async (path, toJson = false) => {
+  try {
+    const content = await fsPromises.readFile(path, { encoding: 'utf8' });
+    return toJson ? JSON.parse(content) : content;
+  }
+  catch (error) {
+    console.error(error);
+  }
+};
+
+/* ========================================================================= */
+
 const startClient$ = async (realmlistPath) => {
   const execPath = path.join(realmlistPath, '../../..', 'wow.exe');
   if (fs.existsSync(execPath)) {
@@ -102,7 +123,8 @@ const getRealmlist$ = async (source) => {
   if (realmlistPath) {
     realmlistContent = await readFile$(realmlistPath);
     // Cache realmlist
-    await writeFile$(CONFIG_PATH, { path: realmlistPath }, true);
+    config.path = realmlistPath;
+    await writeFile$(CONFIG_PATH, config, true);
   }
   return { path: realmlistPath, content: realmlistContent.trim() };
 };
@@ -126,25 +148,6 @@ const setRealmlist$ = async (realmlist) => {
     return realmlistFile;
   }
   throw new Error('No realmlist path specified');
-};
-
-const writeFile$ = async (path, content, toJson = false) => {
-  try {
-    await fsPromises.writeFile(path, toJson ? JSON.stringify(content, null, 2) : content);
-  }
-  catch (error) {
-    console.error(error);
-  }
-};
-
-const readFile$ = async (path, toJson = false) => {
-  try {
-    const content = await fsPromises.readFile(path, { encoding: 'utf8' });
-    return toJson ? JSON.parse(content) : content;
-  }
-  catch (error) {
-    console.error(error);
-  }
 };
 
 const sortRealmlistsByServerName = (realmlists) => {
