@@ -36,9 +36,7 @@
   };
 
   const startClient$ = async (realmlistPath: string) => {
-    // clientFound = await window.electronApi.startClient$(realmlistPath);
-    clientFound = true;
-
+    clientFound = await window.electronApi.startClient$(realmlistPath);
     addToast(clientFound 
       ? { ...new Toast(), type: TOAST_TYPE.SUCCESS, icon: 'bi bi-rocket-takeoff', text: 'Launching client' }
       : { ...new Toast(), type: TOAST_TYPE.WARNING, icon: 'bi bi-exclamation-triangle', text: 'Executable not found' }
@@ -82,8 +80,12 @@
 
   const setRealmlist$ = async (realmlist: Realmlist) => {
     await window.electronApi.setRealmlist$(realmlist)
-      .then((value) => realmlistFile = value)
-      .catch((error) => console.log(error));
+      .then((value) => {
+        realmlistFile = value;
+      })
+      .catch(() => {
+        addToast({ ...new Toast(), type: TOAST_TYPE.WARNING, icon: 'bi bi-exclamation-triangle', text: 'Error setting the realmlist' });
+      });
   }
 
   const editRealmlist = (realmlist: Realmlist) => {

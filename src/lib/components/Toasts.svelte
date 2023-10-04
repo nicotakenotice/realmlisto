@@ -8,11 +8,7 @@
 {#if $toasts}
   <div class="toast w-80">
     {#each $toasts as toast (toast.id)}
-      <Toast 
-        type={toast.type}
-        icon={toast.icon}
-        text={toast.text}
-      />
+      <Toast {toast} />
     {/each}
   </div>  
 {/if}
