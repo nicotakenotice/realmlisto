@@ -4,7 +4,7 @@ const fs = require('fs');
 const fsPromises = require('fs/promises');
 const { spawn } = require('node:child_process');
 
-const DATA_PATH = path.join(__dirname, '..', 'data');
+const DATA_PATH = path.join(app.getPath('userData'), 'data');
 const CONFIG_PATH = path.join(DATA_PATH, 'config.json');
 const REALMLISTS_PATH = path.join(DATA_PATH, 'realmlists.json');
 
@@ -21,7 +21,7 @@ const createWindow = () => {
 
   if (app.isPackaged) {
     Menu.setApplicationMenu(null);
-    mainWindow.loadFile('../src/app.html');
+    mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
   }
   else {
     mainWindow.loadURL('http://localhost:5173');
