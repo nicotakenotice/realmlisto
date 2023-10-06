@@ -21,7 +21,7 @@ const createWindow = () => {
 
   if (app.isPackaged) {
     Menu.setApplicationMenu(null);
-    mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'build', 'index.html')); // Path to the build in the electron-forge repo
   }
   else {
     mainWindow.loadURL('http://localhost:5173');

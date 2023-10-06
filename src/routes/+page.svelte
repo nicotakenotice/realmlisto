@@ -86,19 +86,19 @@
       .catch(() => {
         addToast({ ...new Toast(), type: TOAST_TYPE.WARNING, icon: 'bi bi-exclamation-triangle', text: 'Error setting the realmlist' });
       });
-  }
+  };
 
   const editRealmlist = (realmlist: Realmlist) => {
     selectedRealmlist = realmlist;
     openModal(EDIT_MODAL_ID);
-  }
+  };
 
-  const deleteRealmlist = (realmlist: Realmlist) => {
+  const requestDeleteRealmlist = (realmlist: Realmlist) => {
     selectedRealmlist = realmlist;
     openModal(DELETE_MODAL_ID);
-  }
+  };
 
-  const deleteForReal$ = async (realmlist: Realmlist) => {
+  const deleteRealmlist$ = async (realmlist: Realmlist) => {
     const newRealmlists = realmlists.filter((o) => o.uuid !== realmlist.uuid);
     realmlists = await window.electronApi.saveRealmlists$(newRealmlists);
     closeModal(DELETE_MODAL_ID);
@@ -106,6 +106,8 @@
 </script>
 
 <!-- ====================================================================== -->
+
+<Toasts />
 
 <Header 
   realmlistFile={realmlistFile}
@@ -166,7 +168,7 @@
         isActive={realmlist.realmlist === realmlistFile.content} 
         on:setRealmlist={(e) => setRealmlist$(e.detail)}
         on:editRealmlist={(e) => editRealmlist(e.detail)}
-        on:deleteRealmlist={(e) => deleteRealmlist(e.detail)}
+        on:deleteRealmlist={(e) => requestDeleteRealmlist(e.detail)}
       />
     {/each}
   </div>
@@ -229,7 +231,7 @@
       </div>
 
       <div class="flex flex-row justify-end gap-4">
-        <button class="btn btn-error" on:click={() => deleteForReal$(selectedRealmlist)}>
+        <button class="btn btn-error" on:click={() => deleteRealmlist$(selectedRealmlist)}>
           Yes
         </button>
         
@@ -244,5 +246,3 @@
     </div>
   </div>
 </dialog>
-
-<Toasts />
