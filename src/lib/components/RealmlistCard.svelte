@@ -32,8 +32,8 @@
     <div class="flex flex-row items-baseline gap-2 font-bold">
       <div class="text-primary">{realmlist?.server}</div>
       {#if isActive}
-        <div class="badge badge-sm badge-success rounded font-mono uppercase">
-          Active
+        <div class="badge badge-sm badge-success rounded font-mono font-bold">
+          ACTIVE
         </div>
       {/if}
     </div>

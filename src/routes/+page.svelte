@@ -103,6 +103,8 @@
     realmlists = await window.electronApi.saveRealmlists$(newRealmlists);
     closeModal(DELETE_MODAL_ID);
   };
+
+  $: realmlistFound = realmlists.findIndex((o) => o.realmlist === realmlistFile.content) > -1;
 </script>
 
 <!-- ====================================================================== -->
@@ -148,12 +150,25 @@
       </button>
     </div>
 
-    <textarea 
-      class="textarea textarea-bordered font-mono resize-none w-full" 
-      placeholder="Realmlist content"
-      readonly
-      bind:value={realmlistFile.content}
-    />
+    <div class="indicator flex-grow">
+      {#if !realmlistFound}
+        <button 
+          class="indicator-item indicator-top indicator-center badge badge-sm badge-info rounded" 
+          on:click={() => editRealmlist({ ...new Realmlist(), realmlist: realmlistFile.content })}
+        >
+          <span class="tooltip tooltip-top" data-tip="Realmlist not among your entries, click to add">
+            <span class="font-mono font-bold">NEW</span>
+          </span>
+        </button>
+      {/if}
+
+      <textarea 
+        class="textarea textarea-bordered font-mono resize-none w-full" 
+        placeholder="Realmlist content"
+        readonly
+        bind:value={realmlistFile.content}
+      />
+    </div>
   </div>
 </div>
 
