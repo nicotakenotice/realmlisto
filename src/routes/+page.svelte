@@ -150,24 +150,26 @@
       </button>
     </div>
 
-    <div class="indicator flex-grow">
-      {#if !realmlistFound}
-        <button 
-          class="indicator-item indicator-top indicator-center badge badge-sm badge-info rounded" 
-          on:click={() => editRealmlist({ ...new Realmlist(), realmlist: realmlistFile.content })}
-        >
-          <span class="tooltip tooltip-top" data-tip="Realmlist not among your entries, click to add">
-            <span class="font-mono font-bold">NEW</span>
-          </span>
-        </button>
-      {/if}
-
+    <div class="flex-grow relative">
       <textarea 
         class="textarea textarea-bordered font-mono resize-none w-full" 
         placeholder="Realmlist content"
         readonly
         bind:value={realmlistFile.content}
       />
+
+      {#if !realmlistFound}
+        <div class="absolute top-4 right-4">
+          <div class="tooltip tooltip-left" data-tip="Add missing realmlist">
+            <button 
+              class="btn btn-sm btn-outline btn-info animate-bounce"
+              on:click={() => editRealmlist({ ...new Realmlist(), realmlist: realmlistFile.content })}
+            >
+              <i class="bi bi-plus-lg"></i>
+            </button>
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
