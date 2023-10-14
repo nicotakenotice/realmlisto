@@ -109,8 +109,6 @@
 
 <!-- ====================================================================== -->
 
-<Toasts />
-
 <Header 
   realmlistFile={realmlistFile}
   on:startClient={() => startClient$(realmlistFile.path)} 
@@ -263,3 +261,5 @@
     </div>
   </div>
 </dialog>
+
+<Toasts />
