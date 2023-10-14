@@ -42,6 +42,7 @@ const createDataFolder = () => {
   }
   catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -76,6 +77,7 @@ const writeFile$ = async (path, content, toJson = false) => {
   }
   catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -86,6 +88,7 @@ const readFile$ = async (path, toJson = false) => {
   }
   catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
