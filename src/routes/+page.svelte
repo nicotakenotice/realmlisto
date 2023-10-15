@@ -104,7 +104,7 @@
     closeModal(DELETE_MODAL_ID);
   };
 
-  $: realmlistFound = realmlists.findIndex((o) => o.realmlist === realmlistFile.content) > -1;
+  $: realmlistFound = realmlistFile.path === '' || realmlists.findIndex((o) => o.realmlist === realmlistFile.content) > -1;
 </script>
 
 <!-- ====================================================================== -->
