@@ -1,36 +1,19 @@
 # ⚡ realmlisto
-
 <img src="./.git_assets/realmlisto.gif" alt="realmlisto preview">
 
-# create-svelte
+*realmlisto* is an utility tool for those who love playing on different WoW private servers.  
+Manage your realmlists without any copy/paste hassle and easily start your client from the app.
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+> *realmlisto*'s `play` feature is compatible with every expansion up to *Cataclysm* (included). If the following expansions have the same folder structure as the olders, then it'll work for them too.
 
 ## Developing
-
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
 ## Building
-
 To create a production version of your app:
 
 ```bash
@@ -38,5 +21,3 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
