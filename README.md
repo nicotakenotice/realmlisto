@@ -1,5 +1,5 @@
 # ⚡ realmlisto
-<img src="./.git_assets/realmlisto.gif" alt="realmlisto preview">
+<video src="./.git_assets/realmlisto.mp4" title="realmlisto preview" controls></video>
 
 *realmlisto* is an utility tool for those who love playing on different WoW private servers.  
 Manage your realmlists without any copy/paste hassle and easily start your client from the app.
